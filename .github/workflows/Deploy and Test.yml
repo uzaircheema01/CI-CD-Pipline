@@ -1,0 +1,62 @@
+name: CI/CD Pipeline on Windows Server
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (If Using Node)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Change this based on your project requirements
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+  security-checks:
+    runs-on: windows-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run CodeQL Security Scan
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript  # Change this based on your project (e.g., python, java)
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: Run Dependency Security Audit
+        run: npm audit --audit-level=high
+
+      - name: Run Secret Scanning (GitLeaks)
+        uses: zricethezav/gitleaks-action@v2
+
+  deploy:
+    runs-on: windows-latest
+    needs: security-checks
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Windows Server (Example)
+        run: |
+          echo "Deploying application..."
+          # Add deployment steps (e.g., copy files, restart services, IIS setup)
