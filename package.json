@@ -1,0 +1,26 @@
+{
+  "name": "ci-cd-pipline",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uzaircheema01/CI-CD-Pipline.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uzaircheema01/CI-CD-Pipline/issues"
+  },
+  "homepage": "https://github.com/uzaircheema01/CI-CD-Pipline#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.22.0"
+  }
+}
