@@ -1,4 +1,4 @@
-name: Node.js CI - Test
+name: Node.js CI - Code Testing
 
 on:
   push:
@@ -9,23 +9,48 @@ on:
       - main
 
 jobs:
-  test:
+  code-testing:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'
 
     - name: Install dependencies
       run: npm install
 
-    - name: Run ESLint to check for code issues
+    # Run ESLint for Code Quality and Security
+    - name: Run ESLint
       run: npx eslint .
 
-    - name: Run tests (optional)
+    # Run Unit Tests using Jest
+    - name: Run Unit Tests
       run: npm test
+
+    # Generate Test Coverage Report
+    - name: Generate Code Coverage
+      run: npm test -- --coverage
+
+    # Upload Coverage Report as Artifact
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage
+
+    # Static Code Analysis with SonarCloud
+    - name: Run SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.organization=your-org
+          -Dsonar.projectKey=your-project
+          -Dsonar.sources=.
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
